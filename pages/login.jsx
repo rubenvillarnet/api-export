@@ -17,6 +17,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { setCookie } from 'nookies';
 
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
@@ -93,11 +94,16 @@ export default function Login() {
     setLoading(true);
     try {
       const userData = await authService.login(data);
-      console.log(userData.data.token);
       dispatch({
         type: 'LOGIN',
         payload: userData.data.token
       });
+      if (data.remember) {
+        setCookie({}, 'token', userData.data.token, {
+          maxAge: 30 * 24 * 60 * 60,
+          path: '/'
+        });
+      }
       router.push('/');
     } catch (error) {
       console.log(error);
