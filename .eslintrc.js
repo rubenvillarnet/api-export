@@ -20,6 +20,7 @@ module.exports = {
   },
   plugins: ['react', 'prettier'],
   rules: {
+    'no-console': 'off',
     'prettier/prettier': 'error',
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
     'react/forbid-prop-types': [0, { forbid: ['any'] }],
