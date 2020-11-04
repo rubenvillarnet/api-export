@@ -120,7 +120,7 @@ export default function Login() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component='h1' variant='h5'>
-          Iniciar sesión
+          Login
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <TextField
@@ -128,14 +128,14 @@ export default function Login() {
             margin='normal'
             fullWidth
             id='user'
-            label='Usuario'
+            label='User'
             name='user'
             autoFocus
             inputRef={register({
               required: true
             })}
             error={!!errors.user}
-            helperText={errors.user && 'Introduce un nombre de usuario'}
+            helperText={errors.user && 'Username is required'}
             disabled={loading}
           />
           <TextField
@@ -150,7 +150,7 @@ export default function Login() {
               required: true
             })}
             error={!!errors.password}
-            helperText={errors.password && 'Introduce una contraseña'}
+            helperText={errors.password && 'Password is required'}
             disabled={loading}
           />
           <FormControlLabel
@@ -180,14 +180,14 @@ export default function Login() {
         <Copyright />
       </Box>
       <Dialog open={loginError} onClose={handleCloseDialog}>
-        <DialogTitle>Credenciales incorrectas</DialogTitle>
+        <DialogTitle>Wrong credentials</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            El usuario o la contraseña no son correctos.
+            Username or password are incorrect.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Cerrar</Button>
+          <Button onClick={handleCloseDialog}>Close</Button>
         </DialogActions>
       </Dialog>
     </Container>
