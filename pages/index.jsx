@@ -12,6 +12,8 @@ import { Skeleton } from '@material-ui/lab';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Button, Toolbar, Typography } from '@material-ui/core';
+import { format } from 'date-fns'
+
 
 import { useAuth, useDispatchAuth } from '../components/AuthStore';
 import DevService from '../services/Devs';
@@ -66,6 +68,15 @@ export default function Index() {
   const [page, setPage] = React.useState(0);
   const [limit, setLimit] = React.useState(10);
   const devService = new DevService();
+
+  const setUsers = (users) =>
+    users.length > 0 ? users.map((user) => user.email).join(', ') : '-';
+  const setFirmware = (fw) => (fw ? `${fw?.major}.${fw?.minor}` : '-');
+  const setNodes = (nodes) => nodes.length;
+  const setSerialId = (serial) => serial;
+  const setRegistration = (pending) => (pending ? 'Pending' : 'Confirmed');
+  const setDate = (date) => format(new Date(date), 'dd/MM/yyyy HH:mm');
+
   useEffect(async () => {
     setLoading(true);
     if (token) {
@@ -84,17 +95,18 @@ export default function Index() {
             comment
           }) => ({
             devid,
-            users: 'SETUSERS',
-            nodes: 'NODES',
-            serial: 'SERIALID',
-            firmware: 'FIRMWARE',
-            pending,
-            registerDate,
+            users: setUsers(users),
+            nodes: setNodes(nodes),
+            serial: setSerialId(serialid),
+            firmware: setFirmware(firmware),
+            pending: setRegistration(pending),
+            registerDate: setDate(registerDate),
             comment
           })
         ),
         total
       });
+      console.log(docs);
       setLoading(false);
     }
   }, [page, limit, token]);
@@ -164,14 +176,14 @@ export default function Index() {
                   registerDate,
                   comment
                 }) => (
-                  <TableRow key={devid}>
+                  <TableRow hover key={devid}>
                     <TableCell>{cell(devid)}</TableCell>
                     <TableCell>{cell(users)}</TableCell>
                     <TableCell>{cell(nodes)}</TableCell>
                     <TableCell>{cell(serial)}</TableCell>
                     <TableCell>{cell(firmware)}</TableCell>
                     <TableCell>
-                      {cell(pending ? 'Pending' : 'Confirmed')}
+                      {cell(pending)}
                     </TableCell>
                     <TableCell>{cell(registerDate)}</TableCell>
                     <TableCell>{cell(comment)}</TableCell>

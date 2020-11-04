@@ -155,7 +155,7 @@ export default function Login() {
           />
           <FormControlLabel
             control={<Checkbox value='remember' color='primary' />}
-            label='Recuérdame'
+            label='Remember me'
             inputRef={register}
             name='remember'
             disabled={loading}
@@ -167,7 +167,7 @@ export default function Login() {
             color='primary'
             className={classes.submit}
           >
-            Iniciar sesión
+            Log in
           </Button>
           {loading && (
             <div className={classes.loader}>
