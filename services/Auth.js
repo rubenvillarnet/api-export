@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { errorHandler } from './utils';
 
 const instance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_API_URL}/auth`,
@@ -8,21 +9,16 @@ const instance = axios.create({
   }
 });
 
-class AuthService {
-  errorHandler = async (e) => {
-    console.error('AUTH API ERROR');
-    console.error(e);
-  };
-
+class Auth {
   login = async (user) => {
     let userData;
     try {
       userData = await instance.post('/login', user);
     } catch (error) {
-      this.errorHandler(error);
+      errorHandler(error);
     }
     return userData;
   };
 }
 
-export default AuthService;
+export default Auth;

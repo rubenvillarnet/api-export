@@ -22,7 +22,7 @@ import { setCookie } from 'nookies';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 
-import AuthService from '../services/auth.service';
+import AuthService from '../services/Auth';
 import { useDispatchAuth } from '../components/AuthStore';
 
 function Copyright() {
