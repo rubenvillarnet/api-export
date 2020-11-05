@@ -26,6 +26,6 @@ module.exports = {
     'react/forbid-prop-types': [0, { forbid: ['any'] }],
     'react/prop-types': 0,
     'react/jsx-props-no-spreading': 'off',
-    'no-underscore-dangle': [1, { allow: ['__NEXT_REDUX_STORE__', '_store'] }]
+    'no-underscore-dangle': [1, { allow: ['_id'] }]
   }
 };

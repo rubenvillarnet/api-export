@@ -104,7 +104,7 @@ export default function Login() {
           path: '/'
         });
       }
-      router.push('/');
+      router.push('/devs');
     } catch (error) {
       console.log(error);
       setLoginError(true);

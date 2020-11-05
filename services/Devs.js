@@ -11,11 +11,11 @@ const instance = axios.create({
 
 class Devs {
   getDevs = async (data) => {
-    const { page, limit, sortString: sort, token } = data;
+    const { page, limit, sort = '-register_date', token } = data;
     let query = '?';
     let devsData;
     if (page) {
-      query += `&page=${page + 1}`;
+      query += `&page=${page}`;
     }
     if (limit) {
       if (limit === -1) {
@@ -24,6 +24,7 @@ class Devs {
         query += `&limit=${limit}`;
       }
     }
+    console.log(sort);
     if (sort) {
       query += `&sort=${sort}`;
     }
