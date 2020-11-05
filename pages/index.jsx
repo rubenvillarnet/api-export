@@ -8,12 +8,12 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import { Skeleton } from '@material-ui/lab';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Button, Toolbar, Typography } from '@material-ui/core';
-import { format } from 'date-fns'
-
+import { format } from 'date-fns';
 
 import { useAuth, useDispatchAuth } from '../components/AuthStore';
 import DevService from '../services/Devs';
@@ -27,35 +27,44 @@ const useStyles = makeStyles(() => ({
 const columns = [
   {
     id: 'devid',
-    label: 'Identifier'
+    label: 'Identifier',
+    width: '180px'
   },
   {
     id: 'users',
-    label: 'Users'
+    label: 'Users',
+    width: '300px'
   },
   {
     id: 'nodes',
-    label: 'Nodes'
+    label: 'Nodes',
+    width: '50px'
   },
   {
     id: 'serialid',
-    label: 'Serial'
+    label: 'Serial',
+    width: '50px'
   },
   {
     id: 'firmware',
-    label: 'FW'
+    label: 'FW',
+    width: '50px'
   },
   {
     id: 'pending',
-    label: 'Registration'
+    label: 'Registration',
+    width: '50px'
   },
   {
     id: 'register_date',
-    label: 'Date'
+    label: 'Date',
+    sort: true,
+    width: '150px'
   },
   {
     id: 'comment',
-    label: 'Comment'
+    label: 'Comment',
+    width: '300px'
   }
 ];
 
@@ -65,8 +74,10 @@ export default function Index() {
   const classes = useStyles();
   const [devs, setDevs] = useState(undefined);
   const [isloading, setLoading] = useState(true);
-  const [page, setPage] = React.useState(0);
-  const [limit, setLimit] = React.useState(10);
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(10);
+  const [sortBy, setSortBy] = useState('register_date');
+  const [sort, setSort] = useState('desc');
   const devService = new DevService();
 
   const setUsers = (users) =>
@@ -80,11 +91,20 @@ export default function Index() {
   useEffect(async () => {
     setLoading(true);
     if (token) {
-      const devsData = await devService.getDevs({ page, limit, token });
+      const sortString = `${sort === 'desc' ? '-' : ''}${sortBy}`;
+      console.log(page);
+      console.log(sortString);
+      const devsData = await devService.getDevs({
+        page,
+        limit,
+        sortString,
+        token
+      });
       const { docs, total } = devsData.data;
       setDevs({
         items: docs.map(
           ({
+            _id,
             devid,
             users,
             nodes,
@@ -94,6 +114,7 @@ export default function Index() {
             register_date: registerDate,
             comment
           }) => ({
+            _id,
             devid,
             users: setUsers(users),
             nodes: setNodes(nodes),
@@ -109,7 +130,7 @@ export default function Index() {
       console.log(docs);
       setLoading(false);
     }
-  }, [page, limit, token]);
+  }, [page, limit, sort, sortBy, token]);
 
   const handleLogout = () => dispatch({ type: 'LOGOUT' });
 
@@ -120,6 +141,13 @@ export default function Index() {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+  };
+
+  const handleSort = (id) => {
+    const isDesc = sortBy === id && sort === 'desc';
+    setSortBy(id);
+    setSort(isDesc ? 'asc' : 'desc');
+    setPage(0);
   };
 
   const paginate = () => (
@@ -160,7 +188,22 @@ export default function Index() {
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell key={column.id}>{column.label}</TableCell>
+                  <TableCell
+                    key={column.id}
+                    style={{ width: column.width, minWidth: column.width }}
+                  >
+                    {column.sort ? (
+                      <TableSortLabel
+                        active
+                        direction={sort}
+                        onClick={() => handleSort(column.id)}
+                      >
+                        {column.label}
+                      </TableSortLabel>
+                    ) : (
+                      column.label
+                    )}
+                  </TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -174,17 +217,24 @@ export default function Index() {
                   firmware,
                   pending,
                   registerDate,
-                  comment
+                  comment,
+                  _id
                 }) => (
                   <TableRow hover key={devid}>
-                    <TableCell>{cell(devid)}</TableCell>
+                    <TableCell>
+                      <a
+                        href={`https://control.termoweb.net/admin_panel/#devs/${_id}`}
+                        target='_blank'
+                        rel='noreferrer'
+                      >
+                        {cell(devid)}
+                      </a>
+                    </TableCell>
                     <TableCell>{cell(users)}</TableCell>
                     <TableCell>{cell(nodes)}</TableCell>
                     <TableCell>{cell(serial)}</TableCell>
                     <TableCell>{cell(firmware)}</TableCell>
-                    <TableCell>
-                      {cell(pending)}
-                    </TableCell>
+                    <TableCell>{cell(pending)}</TableCell>
                     <TableCell>{cell(registerDate)}</TableCell>
                     <TableCell>{cell(comment)}</TableCell>
                   </TableRow>

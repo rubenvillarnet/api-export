@@ -11,7 +11,7 @@ const instance = axios.create({
 
 class Devs {
   getDevs = async (data) => {
-    const { page, limit, token } = data;
+    const { page, limit, sortString: sort, token } = data;
     let query = '?';
     let devsData;
     if (page) {
@@ -23,6 +23,9 @@ class Devs {
       } else {
         query += `&limit=${limit}`;
       }
+    }
+    if (sort) {
+      query += `&sort=${sort}`;
     }
     try {
       devsData = await instance.get(`/${query}`, addAuth(token));
